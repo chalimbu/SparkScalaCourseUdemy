@@ -22,7 +22,7 @@ object FriendsByAge {
    
     // Set the log level to only print errors
     Logger.getLogger("org").setLevel(Level.ERROR)
-        
+
     // Create a SparkContext using every core of the local machine
     val sc = new SparkContext("local[*]", "FriendsByAge")
   
@@ -31,24 +31,41 @@ object FriendsByAge {
     
     // Use our parseLines function to convert to (age, numFriends) tuples
     val rdd = lines.map(parseLine)
-    
-    // Lots going on here...
-    // We are starting with an RDD of form (age, numFriends) where age is the KEY and numFriends is the VALUE
-    // We use mapValues to convert each numFriends value to a tuple of (numFriends, 1)
-    // Then we use reduceByKey to sum up the total numFriends and total instances for each age, by
-    // adding together all the numFriends values and 1's respectively.
-    val totalsByAge = rdd.mapValues(x => (x, 1)).reduceByKey( (x,y) => (x._1 + y._1, x._2 + y._2))
-    
-    // So now we have tuples of (age, (totalFriends, totalInstances))
-    // To compute the average we divide totalFriends / totalInstances for each age.
-    val averagesByAge = totalsByAge.mapValues(x => x._1 / x._2)
+
+    //COMPLETAR EL CODIGO PARA COMPUTAR EL NUMERO PROMEDIO DE AMIGOS POR CADA EDAD.
+    val averagesByAge=sc.parallelize(List(1,2,3))
     
     // Collect the results from the RDD (This kicks off computing the DAG and actually executes the job)
     val results = averagesByAge.collect()
     
     // Sort and print the final results.
     results.sorted.foreach(println)
+    //ejemplo resultados
+    /*
+    (18,343)
+    (19,213)
+    (20,165)
+    (21,350)
+    (22,206)
+    (23,246)
+    (24,233)
+    (25,197)
+    (26,242)
+    ...
+    *
+    * */
   }
     
 }
+
+//// Lots going on here...
+//    // We are starting with an RDD of form (age, numFriends) where age is the KEY and numFriends is the VALUE
+//    // We use mapValues to convert each numFriends value to a tuple of (numFriends, 1)
+//    // Then we use reduceByKey to sum up the total numFriends and total instances for each age, by
+//    // adding together all the numFriends values and 1's respectively.
+//    val totalsByAge = rdd.mapValues(x => (x, 1)).reduceByKey( (x,y) => (x._1 + y._1, x._2 + y._2))
+//
+//    // So now we have tuples of (age, (totalFriends, totalInstances))
+//    // To compute the average we divide totalFriends / totalInstances for each age.
+//    val averagesByAge = totalsByAge.mapValues(x => x._1 / x._2)
   
