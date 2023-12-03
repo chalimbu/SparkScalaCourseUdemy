@@ -54,6 +54,7 @@ object WordCountBetterSortedDataset {
     val wordCountsSortedDS = wordCountsDS.sort("count")
     wordCountsSortedDS.show(wordCountsSortedDS.count.toInt)
 
+    spark.stop()
   }
 }
 
